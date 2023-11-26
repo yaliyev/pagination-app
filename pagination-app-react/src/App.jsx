@@ -3,17 +3,19 @@ import { useState } from 'react'
 import { getBeers, getBeersByPageAndByPerPage } from './api/punk_request'
 import BeerTable from './components/BeerTable';
 import BeerCard from './components/BeerCard';
-import { Col, Row } from 'antd';
+import { Col, Row,Pagination,Select } from 'antd';
+
+
+const itemsPerPageOptions = [10, 15, 20, 25, 50, 80];
 
 function App() {
 
   const [beers, setBeers] = useState([]);
   const [paginationBeers, setPaginationBeers] = useState([]);
   const [currentPaginationPage, setCurrentPaginationPage] = useState(1);
-
+  const [itemsPerPage, setItemsPerPage] = useState(itemsPerPageOptions[0]);
   useEffect(() => {
     async function loadData() {
-      // const data = await getBeersByPageAndByPerPage(1,50);
       const data = await getBeers();
       setBeers(data);
     }
@@ -23,12 +25,12 @@ function App() {
 
   useEffect(() => {
     async function loadPaginationData() {
-      const data = await getBeersByPageAndByPerPage(currentPaginationPage, 10);
+      const data = await getBeersByPageAndByPerPage(currentPaginationPage, itemsPerPage);
       setPaginationBeers(data);
     }
     loadPaginationData();
 
-  }, [currentPaginationPage])
+  }, [currentPaginationPage,itemsPerPage]) // Ikili deyishiklik gozleyen dependency array
 
   return (
     <>
@@ -45,6 +47,39 @@ function App() {
           })
         }
 
+
+      </Row>
+
+      <Row>
+      
+   
+<Select
+        defaultValue={itemsPerPage}
+        style={{ width: 120 }}
+        onChange={(value)=>{setItemsPerPage(value)}}
+        options={
+          [...itemsPerPageOptions].map((item)=>{
+            return {
+              value: item,
+              label: item
+            }
+            
+          })
+            
+          
+          
+        }
+      >
+       
+      </Select>
+      <Pagination
+        defaultCurrent={currentPaginationPage}
+        total={330} 
+        pageSize={Number(itemsPerPage)}
+        showSizeChanger={false}
+        onChange={(value)=>{setCurrentPaginationPage(value)}}
+        
+      />
 
       </Row>
 
