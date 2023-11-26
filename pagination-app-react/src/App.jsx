@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { useState } from 'react'
-import { getBeersByPageAndByPerPage } from './api/punk_request'
+import { getBeers,getBeersByPageAndByPerPage } from './api/punk_request'
 import BeerTable from './components/BeerTable';
 
 function App() {
@@ -9,7 +9,8 @@ function App() {
 
   useEffect(() => {
     async function loadData() {
-      const data = await getBeersByPageAndByPerPage(1,10);
+      // const data = await getBeersByPageAndByPerPage(1,50);
+      const data = await getBeers();
       setBeers(data);
     }
     loadData();

@@ -8,6 +8,12 @@ const BeerTable = ({ beers }) => {
         const [month, year] = dateString.split('/');
         return new Date(`${year}-${month.padStart(2, '0')}-01`);
       };
+    
+      const getBeerDateYear = (dateString) => {
+        const [month, year] = dateString.split('/');
+        return year;
+      };
+    
 
     const columns = [
         {
@@ -26,6 +32,13 @@ const BeerTable = ({ beers }) => {
             title: 'First Brewed',
             dataIndex: 'first_brewed',
             key: 'first_brewed',
+            filters:[
+                {
+                    text:'After 2010 brewing beers',
+                    value: ''
+                }
+            ],
+            onFilter: (value, record) => Number(getBeerDateYear(record.first_brewed))>= 2010,
             sorter: (a, b) => toDateWithinMonthAndYear(a.first_brewed) -  toDateWithinMonthAndYear(b.first_brewed) ,
             sortDirections: ['ascend','descend'],
         },
