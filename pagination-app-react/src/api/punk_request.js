@@ -16,4 +16,11 @@ async function searchBeersByName(searchParam){
     }
     return await axios.get(resultAPI_URL).then(response=>response.data);
 }
-export  {getBeers,getBeersByPageAndByPerPage,searchBeersByName}; 
+async function filterBeersByAbvValue(aboveThisValue){
+    let resultAPI_URL = API_URL;
+    if(Number(aboveThisValue) > 0){
+      resultAPI_URL = resultAPI_URL + `?abv_gt=${Number(aboveThisValue)}`;
+    }
+    return await axios.get(resultAPI_URL).then(response=>response.data);
+}
+export  {getBeers,getBeersByPageAndByPerPage,searchBeersByName,filterBeersByAbvValue}; 

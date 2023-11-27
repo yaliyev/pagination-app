@@ -1,6 +1,6 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useRef } from 'react'
 import { useState } from 'react'
-import { getBeers, getBeersByPageAndByPerPage,searchBeersByName } from './api/punk_request'
+import { filterBeersByAbvValue, getBeers, getBeersByPageAndByPerPage,searchBeersByName } from './api/punk_request'
 import BeerTable from './components/BeerTable';
 import BeerCard from './components/BeerCard';
 import { Col, Row, Pagination, Select, Modal, Button, Input } from 'antd';
@@ -19,6 +19,9 @@ function App() {
   const [isDetailedBeerCardModalOpen, setIsDetailedBeerCardModalOpen] = useState(false);
   const [currentBeerCard, setCurrentBeerCard] = useState(null);
   const [searchBeerCardInput,setSearchBeerCardInput] = useState("");
+  const [filterBeerCardABVRange,setFilterBeerCardABVRange] = useState(null);
+
+  let filterBeerCardABVRangeRef = useRef("");
 
   useEffect(() => {
     async function loadData() {
@@ -47,6 +50,14 @@ function App() {
 
   },[searchBeerCardInput])
 
+  useEffect(()=>{
+    async function loadDataByFilter() {
+      const data = await filterBeersByAbvValue(filterBeerCardABVRange);
+      setPaginationBeers(data.slice(0,itemsPerPage));
+    }
+    loadDataByFilter();
+  },[filterBeerCardABVRange])
+
   return (
     <>
       <BeerTable beers={beers} />
@@ -54,15 +65,15 @@ function App() {
 
       <Row>
         <Col style={{ marginLeft: '20px' }} span={6}>
-          <Input onChange={(e)=>{setSearchBeerCardInput(e.target.value)}} placeholder="Search beer card:" />
+          <Input onChange={(e)=>{}} placeholder="Search beer card:" />
 
         </Col>
         <Col style={{ marginLeft: '20px' }}  span={6}>
          
-        <Slider  defaultValue={50}  step={1}  marks={[{value:0,label:"0"},{value:100,label:"100"}]} />
+        <Slider ref={filterBeerCardABVRangeRef}  defaultValue={5}  step={1}  marks={[{value:0,label:"0"},{value:100,label:"100"}]} valueLabelDisplay="on" />
         </Col>
         <Col style={{ marginLeft: '20px' }}  span={6}>
-          <Button type='primary'>Submit</Button>
+          <Button onClick={()=>{setFilterBeerCardABVRange(filterBeerCardABVRangeRef.current.innerText.split("\n")[2])}} type='primary'>Submit</Button>
         </Col>
       </Row>
       <Row>
@@ -105,7 +116,7 @@ function App() {
 
         <Select
           defaultValue={itemsPerPage}
-          style={{ width: 120 }}
+          style={{ width: 120 }} 
           onChange={(value) => { setItemsPerPage(value) }}
           options={
             [...itemsPerPageOptions].map((item) => {
