@@ -65,7 +65,7 @@ function App() {
 
       <Row>
         <Col style={{ marginLeft: '20px' }} span={6}>
-          <Input onChange={(e)=>{}} placeholder="Search beer card:" />
+          <Input onChange={(e)=>{setSearchBeerCardInput(e.target.value)}} placeholder="Search beer card:" />
 
         </Col>
         <Col style={{ marginLeft: '20px' }}  span={6}>
